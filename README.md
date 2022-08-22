@@ -45,3 +45,11 @@ Conexión con mongoDB
 > https://blog.friendsofgo.tech/posts/driver-oficial-mongodb-golang/
 
 ### Frontend
+
+Se utilza react para el desarrollo junto a node 17
+
+CRUD con react
+>https://www.freecodecamp.org/news/how-to-perform-crud-operations-using-react/
+
+Crear imagen de docker
+> https://mherman.org/blog/dockerizing-a-react-app/
