@@ -5,26 +5,27 @@ import axios from 'axios';
 export default function Create() {
     const [registration, setRegistration] = useState('');
     const [brand, setBrand] = useState('');
-    const [model, setModel] = useState('');
+    const [modelAux, setModelAux] = useState('');
     const [series, setSeries] = useState('');
     const [color, setColor] = useState('');
     const postData = () => {
 
-        let modelAux = Number(model);
-
-        axios.post(`http://192.168.122.220:8080/cars`, {
+        let model = Number(modelAux);
+        //http://192.168.122.220:8080
+        axios.post(`host.docker.internal:8080/cars`, {
             registration,
             brand,
-            modelAux,
+            model,
             series,
             color
         }).then(success => {
             window.alert("Vehículo agregado")
             setRegistration('');
             setBrand('');
-            setModel('');
+            setModelAux('');
             setSeries('');
             setColor('');
+            window.location.href = '/';
         }).catch(error => {
             console.log(error);
             window.alert("Error: no se ha podido agregar el vehículo")
@@ -44,7 +45,7 @@ export default function Create() {
                 </Form.Field>
                 <Form.Field>
                     <label className='space-between'>Modelo</label>
-                    <input value={model} className='space-between' placeholder='Modelo del vehículo' onChange={(e) => setModel(e.target.value)} />
+                    <input value={modelAux} className='space-between' placeholder='Modelo del vehículo' onChange={(e) => setModelAux(e.target.value)} />
                 </Form.Field>
                 <Form.Field>
                     <label className='space-between'>Serie</label>
@@ -54,7 +55,7 @@ export default function Create() {
                     <label className='space-between'>Color</label>
                     <input value={color} className='space-between' placeholder='Nombre del color' onChange={(e) => setColor(e.target.value)} />
                 </Form.Field>
-                <Button onClick={postData} disabled={!registration || !brand || !model || !series || !color} type='submit'>Agregar carro</Button>
+                <Button onClick={postData} disabled={!registration || !brand || !modelAux || !series || !color} type='submit'>Agregar carro</Button>
             </Form>
         </div>
     )

@@ -3,16 +3,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function Read() {
+    const [searchValue, setSearchValue] = useState('');
     const [APIData, setAPIData] = useState([]);
     useEffect(() => {
-        axios.get(`http://192.168.122.220:8080/cars`)
+        //http://192.168.122.220:8080
+        axios.get(`host.docker.internal:8080/cars`)
             .then((response) => {
+                localStorage.clear();
                 setAPIData(response.data);
             })
     }, [])
 
     const deleteData = (registration) => {
-        axios.delete(`http://192.168.122.220:8080/cars/${registration}`)
+        axios.delete(`host.docker.internal:8080/cars/${registration}`)
             .then(success => {
                 window.location.reload();
             }).catch(error => {
@@ -21,8 +24,36 @@ export default function Read() {
             })
     }
 
+    const editData = (registration) => {
+        APIData.forEach(x => {
+            if (x.Registration === registration) {
+                console.log(x);
+                localStorage.setItem("edit", JSON.stringify(x))
+                window.location.href = '/update'
+            }
+        })
+    }
+
+    const search = (key, value) => {
+        axios.get(`host.docker.internal:8080/cars?${key}=${value}`)
+            .then((response) => {
+                localStorage.clear();
+                setAPIData(response.data);
+            }).catch(error => {
+                setAPIData([]);
+            })
+    }
+
     return (
-        <div>
+        <div className='space-between'>
+            <div>
+                <h4 className='space-between'>Buscar</h4>
+                <Button disabled={!searchValue} onClick={() => search('brand', searchValue)} className='btn btn-secondary space-between'>Marca</Button>
+                <Button disabled={!searchValue} onClick={() => search('model', searchValue)} className='btn btn-warning space-between'>Modelo</Button>
+                <Button disabled={!searchValue} onClick={() => search('color', searchValue)} className='btn btn-success space-between'>Color</Button>
+                <input value={searchValue} className='space-between' placeholder='...' onChange={(e) => setSearchValue(e.target.value)} />
+            </div>
+            <hr className='width-all'></hr>
             <Table singleLine>
                 <Table.Header>
                     <Table.Row>
@@ -45,8 +76,8 @@ export default function Read() {
                                 <Table.Cell>{data.Series}</Table.Cell>
                                 <Table.Cell>{data.Color}</Table.Cell>
                                 <Table.Cell>
-                                    <Button className='btn btn-primary'>Editar</Button>
-                                    <Button onClick={() => deleteData(data.Registration)} className='btn btn-danger'>Eliminar</Button>
+                                    <Button onClick={() => editData(data.Registration)} className='btn btn-primary space-between'>Editar</Button>
+                                    <Button onClick={() => deleteData(data.Registration)} className='btn btn-danger space-between'>Eliminar</Button>
                                 </Table.Cell>
                             </Table.Row>
                         )
